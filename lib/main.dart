@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ltdd/modules/forgot_password.dart';
 import 'package:ltdd/modules/login.dart';
+import 'package:ltdd/modules/register.dart';
 
 void main() {
   runApp(const MyApp());
@@ -22,6 +23,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/login': (context) => LoginView(),
         '/forgotPassword': (context) => ForgotPasswordView(),
+        '/register': (context) => RegisterView(),
       },
     );
   }

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:ltdd/auth.dart';
 
-class ForgotPasswordView extends StatelessWidget {
-  ForgotPasswordView({super.key});
+class RegisterView extends StatelessWidget {
+  RegisterView({super.key});
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController usernameTEC = TextEditingController();
@@ -16,7 +16,7 @@ class ForgotPasswordView extends StatelessWidget {
         child: Column(
           children: [
             const SizedBox(height: 100),
-            const Text('Forgot Password',
+            const Text('Register',
                 style: TextStyle(
                   fontSize: 28,
                   color: Colors.blue,
@@ -133,15 +133,15 @@ class ForgotPasswordView extends StatelessWidget {
                           }
 
                           Text snackBarText() {
-                            if (isUserExist(usernameTEC.text)) {
+                            if (!isUserExist(usernameTEC.text)) {
                               if (isPasswordMatch(
                                   passwordTEC.text, confirmPasswordTEC.text)) {
-                                return const Text('Change password success!');
+                                return const Text('Register success!');
                               } else {
                                 return const Text('Password not match!');
                               }
                             } else {
-                              return const Text('User not exist!');
+                              return const Text('User exist!');
                             }
                           }
 
@@ -152,9 +152,10 @@ class ForgotPasswordView extends StatelessWidget {
                           if (_formKey.currentState!.validate()) {
                             ScaffoldMessenger.of(context)
                                 .showSnackBar(snackBar);
-                            if (isUserExist(usernameTEC.text) &&
+                            if (!isUserExist(usernameTEC.text) &&
                                 isPasswordMatch(passwordTEC.text,
                                     confirmPasswordTEC.text)) {
+                              Authen.username = usernameTEC.text;
                               Authen.password = passwordTEC.text;
                               Navigator.pop(context, usernameTEC.text);
                             }
@@ -179,28 +180,13 @@ class ForgotPasswordView extends StatelessWidget {
                 padding: const EdgeInsets.all(20),
                 child: Align(
                   alignment: Alignment.bottomCenter,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      TextButton(
-                        onPressed: () {
-                          Navigator.pushNamedAndRemoveUntil(
-                              context, '/login', (route) => false);
-                        },
-                        child: const Text('Login',
-                            style:
-                                TextStyle(color: Colors.brown, fontSize: 16)),
-                      ),
-                      const Text('|', style: TextStyle(fontSize: 16)),
-                      TextButton(
-                        onPressed: () {
-                          Navigator.pushNamedAndRemoveUntil(
-                              context, '/register', (route) => false);
-                        },
-                        child: const Text('Register',
-                            style: TextStyle(color: Colors.red, fontSize: 16)),
-                      ),
-                    ],
+                  child: TextButton(
+                    onPressed: () {
+                      Navigator.pushNamedAndRemoveUntil(
+                          context, '/login', (route) => false);
+                    },
+                    child: const Text('Login',
+                        style: TextStyle(color: Colors.brown, fontSize: 16)),
                   ),
                 ),
               ),
