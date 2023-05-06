@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ltdd/modules/forgot_password.dart';
 import 'package:ltdd/modules/login.dart';
 
 void main() {
@@ -17,6 +18,11 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: LoginView(),
+      initialRoute: '/login',
+      routes: {
+        '/login': (context) => LoginView(),
+        '/forgotPassword': (context) => ForgotPasswordView(),
+      },
     );
   }
 }

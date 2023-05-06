@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:ltdd/auth.dart';
 
-class LoginView extends StatelessWidget {
-  LoginView({super.key});
+class ForgotPasswordView extends StatelessWidget {
+  ForgotPasswordView({super.key});
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController usernameTEC = TextEditingController();
   final TextEditingController passwordTEC = TextEditingController();
+  final TextEditingController confirmPasswordTEC = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +16,7 @@ class LoginView extends StatelessWidget {
         child: Column(
           children: [
             const SizedBox(height: 100),
-            const Text('Login',
+            const Text('Forgot Password',
                 style: TextStyle(
                   fontSize: 28,
                   color: Colors.blue,
@@ -57,7 +58,7 @@ class LoginView extends StatelessWidget {
                     const SizedBox(height: 20),
                     const Align(
                       alignment: Alignment.centerLeft,
-                      child: Text('Password',
+                      child: Text('New Password',
                           style: TextStyle(
                             fontSize: 16,
                             color: Colors.blue,
@@ -66,14 +67,43 @@ class LoginView extends StatelessWidget {
                     TextFormField(
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Please enter password';
+                          return 'Please enter new password';
+                        }
+                        return null;
+                      },
+                      controller: confirmPasswordTEC,
+                      obscureText: true,
+                      decoration: const InputDecoration(
+                        hintText: 'Enter new password',
+                        prefixIcon: Icon(Icons.ac_unit),
+                        floatingLabelBehavior: FloatingLabelBehavior.never,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(10),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    const Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text('Confirm Password',
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.blue,
+                          )),
+                    ),
+                    TextFormField(
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter confirm password';
                         }
                         return null;
                       },
                       controller: passwordTEC,
                       obscureText: true,
                       decoration: const InputDecoration(
-                        hintText: 'Enter password',
+                        hintText: 'Enter confirm password',
                         prefixIcon: Icon(Icons.ac_unit),
                         floatingLabelBehavior: FloatingLabelBehavior.never,
                         border: OutlineInputBorder(
@@ -86,25 +116,48 @@ class LoginView extends StatelessWidget {
                     const SizedBox(height: 64),
                     ElevatedButton(
                         onPressed: () {
-                          bool isAuthen(username, password) {
-                            if (username == Authen.username &&
-                                password == Authen.password) {
+                          bool isUserExist(username) {
+                            if (username == Authen.username) {
                               return true;
                             } else {
                               return false;
                             }
                           }
 
+                          bool isPasswordMatch(password, confirmPassword) {
+                            if (password == confirmPassword) {
+                              return true;
+                            } else {
+                              return false;
+                            }
+                          }
+
+                          Text snackBarText() {
+                            if (isUserExist(usernameTEC.text)) {
+                              if (isPasswordMatch(
+                                  passwordTEC.text, confirmPasswordTEC.text)) {
+                                return const Text('Change password success!');
+                              } else {
+                                return const Text('Password not match!');
+                              }
+                            } else {
+                              return const Text('User not exist!');
+                            }
+                          }
+
                           SnackBar snackBar = SnackBar(
                             duration: const Duration(seconds: 1),
-                            content: isAuthen(
-                                    usernameTEC.text, passwordTEC.text)
-                                ? const Text('Login success!')
-                                : const Text('Invalid username or password!'),
+                            content: snackBarText(),
                           );
                           if (_formKey.currentState!.validate()) {
                             ScaffoldMessenger.of(context)
                                 .showSnackBar(snackBar);
+                            if (isUserExist(usernameTEC.text) &&
+                                isPasswordMatch(passwordTEC.text,
+                                    confirmPasswordTEC.text)) {
+                              Authen.password = passwordTEC.text;
+                              Navigator.pop(context, usernameTEC.text);
+                            }
                           }
                         },
                         style: ElevatedButton.styleFrom(
@@ -115,8 +168,8 @@ class LoginView extends StatelessWidget {
                             ),
                           ),
                         ),
-                        child: const Text('Login',
-                            style: TextStyle(fontSize: 20))),
+                        child:
+                            const Text('Next', style: TextStyle(fontSize: 20))),
                   ],
                 ),
               ),
@@ -130,16 +183,10 @@ class LoginView extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       TextButton(
-                        onPressed: () async {
-                          final result = await Navigator.pushNamed(
-                              context, '/forgotPassword');
-                          if (result != null) {
-                            usernameTEC.clear();
-                            passwordTEC.clear();
-                            usernameTEC.text = result.toString();
-                          }
+                        onPressed: () {
+                          Navigator.pop(context);
                         },
-                        child: const Text('Forgot password?',
+                        child: const Text('Login',
                             style:
                                 TextStyle(color: Colors.brown, fontSize: 16)),
                       ),
