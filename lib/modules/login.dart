@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:ltdd/auth.dart';
 
 class LoginView extends StatelessWidget {
-  const LoginView({super.key});
+  LoginView({super.key});
+
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final TextEditingController usernameTEC = TextEditingController();
+  final TextEditingController passwordTEC = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -17,6 +22,7 @@ class LoginView extends StatelessWidget {
                 )),
             const SizedBox(height: 20),
             Form(
+              key: _formKey,
               child: Padding(
                 padding: const EdgeInsets.all(20),
                 child: Column(
@@ -30,6 +36,13 @@ class LoginView extends StatelessWidget {
                           )),
                     ),
                     TextFormField(
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter username';
+                        }
+                        return null;
+                      },
+                      controller: usernameTEC,
                       decoration: const InputDecoration(
                         hintText: 'Enter username',
                         prefixIcon: Icon(Icons.accessibility),
@@ -51,6 +64,13 @@ class LoginView extends StatelessWidget {
                           )),
                     ),
                     TextFormField(
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter password';
+                        }
+                        return null;
+                      },
+                      controller: passwordTEC,
                       obscureText: true,
                       decoration: const InputDecoration(
                         hintText: 'Enter password',
@@ -65,7 +85,27 @@ class LoginView extends StatelessWidget {
                     ),
                     const SizedBox(height: 64),
                     ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          bool isAuthen(username, password) {
+                            if (username == Authen.username &&
+                                password == Authen.password) {
+                              return true;
+                            } else {
+                              return false;
+                            }
+                          }
+
+                          SnackBar snackBar = SnackBar(
+                            content: isAuthen(
+                                    usernameTEC.text, passwordTEC.text)
+                                ? const Text('Login success!')
+                                : const Text('Invalid username or password!'),
+                          );
+                          if (_formKey.currentState!.validate()) {
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(snackBar);
+                          }
+                        },
                         style: ElevatedButton.styleFrom(
                           minimumSize: const Size(186, 54),
                           shape: const RoundedRectangleBorder(
